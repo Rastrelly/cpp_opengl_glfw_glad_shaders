@@ -1,4 +1,4 @@
-﻿// Розроблено на бізі прикладу з: https://learnopengl.com/
+﻿// Розроблено на базі прикладу з: https://learnopengl.com/
 
 // TODO: доперевод
 
