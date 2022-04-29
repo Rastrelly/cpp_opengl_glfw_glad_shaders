@@ -16,6 +16,7 @@
 // ГЛОБАЛЬНІ ЗМІННІ
 bool useebo = false;
 bool ebokeydis = false;
+int clrindex = 0;
 
 //ВХІДНІ СТРУКТУРИ ДАНИХ
 
@@ -75,10 +76,8 @@ unsigned int vertexShader; // в цій змінній зберігатимут�
 /*
 Надаємо системі код фрагментного GLSL шейдеру. Фрагментні
 шейдери відповідають за обробку кольору зображення:
-
 #version 330 core
 out vec4 FragColor;
-
 void main()
 {
 	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
@@ -94,7 +93,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
 unsigned int fragmentShader; // в цій змінній зберігаються дані фрагментного шейдера
 
 unsigned int shaderProgram; //в цій змінній зберігаються дані програми виконання
-//шедерного коду після компіляції шейдерів
+//шейдерного коду після компіляції шейдерів
 
 //ФУНКЦІЇ ЗВОРОТНОГО ВИКЛИКУ
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -229,16 +228,15 @@ void rendertriangle()
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	// 4 - Відключаємо вершинний масив
-	glBindVertexArray(0);
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
 }
 
 void renderrectangle()
 {
+	
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -249,8 +247,15 @@ void renderrectangle()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(eboindices), eboindices, GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &EBO);
 }
 
 
@@ -261,8 +266,7 @@ void renderblock()
 	
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	
+		
 	if (!useebo) rendertriangle();
 	else renderrectangle();
 	
